@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Meridian Development Group — Website
 
-## Getting Started
+Premium beachfront real estate showcase built with Next.js 16, GSAP, Framer Motion, and Lenis.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+cd meridian-dev
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/
+│   ├── globals.css          # Design tokens (Tailwind v4), film grain, form styles
+│   ├── layout.tsx           # Fonts (Playfair Display + Inter), metadata
+│   └── page.tsx             # Page assembly + Lenis init
+│
+├── hooks/
+│   ├── useImageSequence.ts  ★ Canvas frame sequence hook — swap your frames here
+│   ├── useLenis.ts          # Smooth scroll + GSAP sync
+│   └── useScrollReveal.ts   # Reusable scroll-triggered reveal
+│
+├── lib/
+│   ├── constants.ts         # All site content (projects, stats, copy)
+│   └── utils.ts             # frameSrc(), cn(), clamp(), mapRange()
+│
+├── components/
+│   ├── layout/
+│   │   └── Navigation.tsx   # Fixed nav + fullscreen slide-in menu
+│   ├── ui/
+│   │   ├── Preloader.tsx    # Frame-loading progress screen
+│   │   ├── GrainOverlay.tsx # Film grain (CSS animation)
+│   │   └── ScrollReveal.tsx # Scroll-triggered fade/rise wrapper
+│   └── sections/
+│       ├── HeroSection.tsx       # ★ Canvas hero with image sequence
+│       ├── AboutSection.tsx      # Scroll-pinned manifesto word reveal
+│       ├── ProjectsSection.tsx   # Horizontal scroll gallery + detail modal
+│       ├── ProcessSection.tsx    # Pinned horizontal timeline
+│       ├── StatsSection.tsx      # Count-up numbers
+│       ├── TestimonialSection.tsx# Full-bleed quote
+│       └── ContactSection.tsx    # Inquiry form + footer
+│
+public/
+├── frames 1/               ★ YOUR 300 FRAMES (already present)
+│   ├── ezgif-frame-001.jpg
+│   └── … ezgif-frame-300.jpg
+└── images/
+    ├── projects/           # project-1.jpg … project-5.jpg
+    ├── process/            # process-1.jpg … process-6.jpg
+    └── testimonial.jpg     # Full-bleed quote background
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Swapping the Hero Frame Sequence
 
-## Learn More
+Your 300 frames are already in `public/frames 1/` named `ezgif-frame-001.jpg` → `ezgif-frame-300.jpg`.
 
-To learn more about Next.js, take a look at the following resources:
+If you ever swap to a different sequence:
+1. Drop the new frames into `public/frames 1/` with the same naming
+2. If the frame count changes, update `FRAME_COUNT = 300` in `src/components/sections/HeroSection.tsx`
+3. If the naming pattern changes, update `frameSrc()` in `src/lib/utils.ts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Adding Project Images
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Place images in `public/images/projects/` named `project-1.jpg` through `project-5.jpg`.
+Process section images go in `public/images/process/` as `process-1.jpg` through `process-6.jpg`.
 
-## Deploy on Vercel
+## Editing Site Content
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+All text, project data, stats, and testimonials live in one file: **`src/lib/constants.ts`**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `PROJECTS` — project objects (name, location, year, features, images)
+- `STATS` — the four count-up numbers
+- `TESTIMONIAL` — the pull-quote and author
+- `HERO_PHRASES` — kinetic text tied to scroll progress ranges (0–1)
+- `SITE` — name, address, phone, email
+
+## Tech Stack
+
+| Layer | Library |
+|-------|---------|
+| Framework | Next.js 16 App Router |
+| Styling | Tailwind CSS v4 |
+| Scroll animations | GSAP + ScrollTrigger |
+| Component animations | Framer Motion |
+| Smooth scroll | Lenis |
+| Canvas hero | Custom `useImageSequence` hook |
